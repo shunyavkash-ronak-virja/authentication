@@ -1,0 +1,98 @@
+:root {
+  --oxford-blue: #344054;
+  --vesper-violet: #98a2b3;
+  --sambucus: #101828;
+  --white: #ffffff;
+  --white-100: #f0f0f0;
+  --white-200: #d0d5dd;
+  --primary: #1570ef;
+  --primary-100: #d1e9ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ----- Global Css ----- */
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white-100);
+  color: var(--oxford-blue);
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  padding-inline: 20px;
+  margin-inline: auto;
+}
+
+h1 {
+  font-size: 34px;
+  line-height: 1.5;
+  color: var(--sambucus);
+}
+
+section {
+  width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+input {
+  width: 100%;
+  color: var(--oxford-blue);
+  border: none;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid var(--white-200);
+  border-radius: 8px;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 12px 16px;
+}
+
+input:is(:focus, :focus-visible) {
+  outline: none;
+  border-color: var(--primary-100);
+}
+
+input::placeholder {
+  color: var(--vesper-violet);
+}
+/* ----- End Global Css ----- */
+
+.sign-in-wrapper {
+  background-color: var(--white);
+  padding: 40px;
+  border-radius: 20px;
+}
+
+.sign-in-description {
+  margin-top: 8px;
+}
+
+.sign-in-form {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sign-in-input {
+  margin-top: 12px;
+}
+
+.sign-in-input-label {
+  color: var(--oxford-blue);
+}
