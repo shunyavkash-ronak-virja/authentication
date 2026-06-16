@@ -24,16 +24,87 @@
 
                 <form class="form-spacing sign-up-form">
                     <div class="sign-up-input-group">
-                        <label class="sign-up-input-label" for="full-name">Full Name</label>
+                        <label class="text-capitalize sign-up-input-label" for="full-name">Full Name</label>
                         <input class="content-inpute" type="text" id="full-name" placeholder="John Doe" required>
                     </div>
                     <div class="sign-up-input-group">
-                        <label class="sign-up-input-label" for="sign-up-email">Email Address</label>
+                        <label class="text-capitalize sign-up-input-label" for="sign-up-email">Email Address</label>
                         <input class="content-inpute" type="email" id="sign-up-email" placeholder="name@company.com" required>
                     </div>
                     <div class="sign-up-input-group">
-                        <label class="sign-up-input-label" for="sign-up-password">Password</label>
-                        <input class="content-inpute" type="password" id="sign-up-password" placeholder="Enter password" required>
+                        <label class="text-capitalize sign-up-input-label" for="sign-up-number">Number</label>
+                        <input class="content-inpute" type="number" id="sign-up-number" placeholder="+91 1234567890" required>
+                    </div>
+                    <div class="sign-up-input-group">
+                        <label class="text-capitalize sign-up-input-label" for="sign-up-number">Select Your Role</label>
+                        <select class="content-inpute nice-select role-select" name="" id="role-select" required>
+                            <option value="">Chose Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                    <div class="sign-up-input-group">
+                        <label class="text-capitalize sign-up-input-label" for="sign-up-password">Password</label>
+                        <input class="content-inpute" type="password" id="sign-up-password" placeholder="••••••••" required>
+                    </div>
+                    <div class="password-rules-block">
+                        <div class="password-rules-title-group">
+                            <p class="password-rules-title">Password Strength</p>
+                            <span class="password-rules-status">Weak</span>
+                        </div>
+                        <input class="password-rules-progress-bar" type="range" step="25" value="50"></input>
+                        <div class="password-rules-item" id="rule-length">
+                            <div class="password-rules-icon-group">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m9 12 2 2 4-4" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M8 12h8" />
+                                </svg>
+                            </div>
+                            <span>Minimum 8 characters</span>
+                        </div>
+                        <div class="password-rules-item" id="rule-uppercase">
+                            <div class="password-rules-icon-group">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m9 12 2 2 4-4" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M8 12h8" />
+                                </svg>
+                            </div>
+                            <span>At least one uppercase letter</span>
+                        </div>
+                        <div class="password-rules-item" id="rule-number">
+                            <div class="password-rules-icon-group">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m9 12 2 2 4-4" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M8 12h8" />
+                                </svg>
+                            </div>
+                            <span>At least one number</span>
+                        </div>
+                        <div class="password-rules-item" id="rule-special">
+                            <div class="password-rules-icon-group">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true lucide icon-visibility lucide-circle-check-icon lucide-circle-check">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m9 12 2 2 4-4" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M8 12h8" />
+                                </svg>
+                            </div>
+                            <span>At least one special character</span>
+                        </div>
                     </div>
                     <button class="btn primary-btn" type="submit">Create Account</button>
                     <div class="align-center sign-in-text-wrapper">
@@ -44,6 +115,9 @@
             </div>
         </div>
     </section>
+
+    <!----- Custom Js ----->
+    <script src="assets/js/script.js"></script>
 </body>
 
 </html>
