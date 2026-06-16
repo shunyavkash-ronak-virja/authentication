@@ -6,6 +6,7 @@
   --white-100: #f0f0f0;
   --white-200: #d0d5dd;
   --primary: #1570ef;
+  --primary-200: #0152c2;
   --primary-100: #d1e9ff;
 }
 
@@ -45,12 +46,30 @@ section {
   width: 100%;
 }
 
+.font-vesper {
+  color: var(--vesper-violet);
+}
+
 a {
   text-decoration: none;
   color: inherit;
+  display: block;
 }
 
-input {
+.inline-flex {
+  display: inline-flex;
+}
+
+.align-center {
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+button {
   border: none;
   font-size: inherit;
   font-family: inherit;
@@ -75,27 +94,51 @@ input::placeholder {
   color: var(--oxford-blue);
   transition: all 0.3s ease-in-out;
 }
+
+.btn {
+  width: 100%;
+  display: block;
+  font-weight: 500;
+  padding: 16px 24px;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.primary-btn {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-200);
+}
+
+.primary-link {
+  color: var(--primary);
+  transition: 0.3s ease-in-out;
+}
+
+.primary-link:hover {
+  color: var(--primary-200);
+}
 /* ----- End Global Css ----- */
 
-.sign-in-wrapper {
+.section-main-wrapper {
   background-color: var(--white);
   padding: 40px;
   border-radius: 20px;
 }
 
-.sign-in-description {
+.form-description {
   margin-top: 8px;
 }
 
-.sign-in-form {
+.form-spacing {
   margin-top: 32px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-
-.sign-in-input-label {
-  color: var(--oxford-blue);
 }
 
 .sign-in-pass-label-wrapper {
@@ -105,11 +148,19 @@ input::placeholder {
 }
 
 .forgot-password-link {
-  color: var(--primary);
+  font-size: 14px;
 }
 
-.sign-in-remember-wrapper {
+.sign-in-remember-label {
+  max-width: max-content;
   display: flex;
   align-items: center;
   column-gap: 8px;
+  cursor: pointer;
+}
+
+.remember-checkbox {
+  width: 16px;
+  aspect-ratio: 1;
+  cursor: pointer;
 }

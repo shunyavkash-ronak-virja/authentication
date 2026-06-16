@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>authentication</title>
+    <title>Sign In</title>
 
     <!----- Google Font ----->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,24 +18,30 @@
 <body>
     <section class="sign-in-section">
         <div class="container">
-            <div class="sign-in-wrapper">
-                <h1 class="sign-in-title">Sign In</h1>
-                <p class="sign-in-description">We are excited to have your back. Log in now and access your account.</p>
-                <form class="sign-in-form">
-                    <div class="sign-in-input-wrapper">
+            <div class="section-main-wrapper">
+                <h1 class="title">Sign In</h1>
+                <p class="form-description">We are excited to have your back. Log in now and access your account.</p>
+
+                <form class="form-spacing sign-in-form">
+                    <div class="sign-in-input-group">
                         <label class="sign-in-input-label" for="sign-in-email">Email Address</label>
                         <input class="content-inpute sign-in-input" type="email" id="sign-in-email" placeholder="name@company.com" required>
                     </div>
-                    <div class="sign-in-input-wrapper">
+                    <div class="sign-in-input-group">
                         <div class="sign-in-pass-label-wrapper">
                             <label class="sign-in-input-label" for="sign-in-pass">Password</label>
-                            <a href="javascript:void(0);" class="forgot-password-link">Forgot password?</a>
+                            <a class="primary-link forgot-password-link" href="forget-password.html">Forgot password?</a>
                         </div>
                         <input class="content-inpute sign-in-input" type="password" id="sign-in-pass" placeholder="••••••••" required>
                     </div>
-                    <div class="sign-in-remember-wrapper">
-                        <input type="checkbox" id="remember-me-option">
-                        <label for="remember-me-option">Remember me for 1 days</label>
+                    <label class="sign-in-remember-label" for="remember-me-option">
+                        <input type="checkbox" class="remember-checkbox" id="remember-me-option">
+                        <span>Remember me for 1 days</span>
+                    </label>
+                    <button class="btn primary-btn">Sing in</button>
+                    <div class="align-center">
+                        <span class="font-vesper">Don't have an account?</span>
+                        <a class="primary-link inline-flex" href="sign-up.html">Create one for free</a>
                     </div>
                 </form>
             </div>
