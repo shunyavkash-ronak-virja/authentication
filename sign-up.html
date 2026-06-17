@@ -22,20 +22,20 @@
                 <h1 class="title">Create Account</h1>
                 <p class="form-description">Create your account and get started with us today.</p>
 
-                <form class="form-spacing sign-up-form">
-                    <div class="sign-up-input-group">
+                <form class="form-spacing sign-up-form" novalidate>
+                    <div class="form-input-group">
                         <label class="text-capitalize sign-up-input-label" for="full-name">Full Name</label>
                         <input class="content-inpute" type="text" id="full-name" placeholder="John Doe" required>
                     </div>
-                    <div class="sign-up-input-group">
+                    <div class="form-input-group">
                         <label class="text-capitalize sign-up-input-label" for="sign-up-email">Email Address</label>
                         <input class="content-inpute" type="email" id="sign-up-email" placeholder="name@company.com" required>
                     </div>
-                    <div class="sign-up-input-group">
+                    <div class="form-input-group">
                         <label class="text-capitalize sign-up-input-label" for="sign-up-number">Number</label>
-                        <input class="content-inpute" type="number" id="sign-up-number" placeholder="+91 1234567890" required>
+                        <input class="content-inpute" type="number" id="sign-up-number" placeholder="+91 1234567890" maxlength="10" required>
                     </div>
-                    <div class="sign-up-input-group">
+                    <div class="form-input-group">
                         <label class="text-capitalize sign-up-input-label" for="sign-up-number">Select Your Role</label>
                         <select class="content-inpute nice-select role-select" name="" id="role-select" required>
                             <option value="">Chose Role</option>
@@ -43,67 +43,83 @@
                             <option value="user">User</option>
                         </select>
                     </div>
-                    <div class="sign-up-input-group">
-                        <label class="text-capitalize sign-up-input-label" for="sign-up-password">Password</label>
-                        <input class="content-inpute" type="password" id="sign-up-password" placeholder="••••••••" required>
-                    </div>
-                    <div class="password-rules-block">
-                        <div class="password-rules-title-group">
-                            <p class="password-rules-title">Password Strength</p>
-                            <span class="password-rules-status">Weak</span>
-                        </div>
-                        <input class="password-rules-progress-bar" type="range" step="25" value="50"></input>
-                        <div class="password-rules-item" id="rule-length">
-                            <div class="password-rules-icon-group">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="m9 12 2 2 4-4" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M8 12h8" />
-                                </svg>
+                    <div class="password-field-wrapper">
+                        <div class="form-input-group">
+                            <label class="text-capitalize sign-up-input-label" for="sign-up-password">Password</label>
+                            <div class="password-input-wrapper">
+                                <input class="content-inpute" type="password" id="sign-up-password" data-password-input placeholder="••••••••" required>
+                                <div class="password-show-toggle" data-password-toggle>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-show-icon eye-open-icon icon-visibility lucide lucide-eye-icon lucide-eye">
+                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-show-icon eye-close-icon lucide lucide lucide-eye-off-icon lucide-eye-off">
+                                        <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+                                        <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                                        <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+                                        <path d="m2 2 20 20" />
+                                    </svg>
+                                </div>
                             </div>
-                            <span>Minimum 8 characters</span>
                         </div>
-                        <div class="password-rules-item" id="rule-uppercase">
-                            <div class="password-rules-icon-group">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="m9 12 2 2 4-4" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M8 12h8" />
-                                </svg>
+                        <div class="password-rules-block">
+                            <div class="password-rules-title-group">
+                                <p class="password-rules-title">Password Strength</p>
+                                <span class="password-rules-status">Weak</span>
                             </div>
-                            <span>At least one uppercase letter</span>
-                        </div>
-                        <div class="password-rules-item" id="rule-number">
-                            <div class="password-rules-icon-group">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="m9 12 2 2 4-4" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M8 12h8" />
-                                </svg>
+                            <input class="password-rules-progress-bar" type="range" step="25" value="50"></input>
+                            <div class="password-rules-item" data-rule="length">
+                                <div class="password-rules-icon-group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="m9 12 2 2 4-4" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M8 12h8" />
+                                    </svg>
+                                </div>
+                                <span>Minimum 8 characters</span>
                             </div>
-                            <span>At least one number</span>
-                        </div>
-                        <div class="password-rules-item" id="rule-special">
-                            <div class="password-rules-icon-group">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true lucide icon-visibility lucide-circle-check-icon lucide-circle-check">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="m9 12 2 2 4-4" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M8 12h8" />
-                                </svg>
+                            <div class="password-rules-item" data-rule="uppercase">
+                                <div class="password-rules-icon-group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="m9 12 2 2 4-4" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M8 12h8" />
+                                    </svg>
+                                </div>
+                                <span>At least one uppercase letter</span>
                             </div>
-                            <span>At least one special character</span>
+                            <div class="password-rules-item" data-rule="number">
+                                <div class="password-rules-icon-group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true icon-visibility lucide lucide-circle-check-icon lucide-circle-check">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="m9 12 2 2 4-4" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M8 12h8" />
+                                    </svg>
+                                </div>
+                                <span>At least one number</span>
+                            </div>
+                            <div class="password-rules-item" data-rule="special">
+                                <div class="password-rules-icon-group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-icon-true lucide icon-visibility lucide-circle-check-icon lucide-circle-check">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="m9 12 2 2 4-4" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="password-rules-icon password-rules-false lucide lucide-circle-minus-icon lucide-circle-minus">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M8 12h8" />
+                                    </svg>
+                                </div>
+                                <span>At least one special character</span>
+                            </div>
                         </div>
                     </div>
                     <button class="btn primary-btn" type="submit">Create Account</button>
