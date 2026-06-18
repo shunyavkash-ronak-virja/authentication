@@ -3,6 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeFormValidation();
   initializePasswordToggle();
   initializeErrorCleanup();
+
+  const successButton = document.getElementById("success-popup-btn");
+  if (successButton) {
+    successButton.addEventListener("click", () => {
+      hideSuccessPopup();
+      window.location.href = "sign-in.html";
+    });
+  }
 });
 
 function initializePasswordRules() {
@@ -129,13 +137,32 @@ function initializeFormValidation() {
 
   forms.forEach((form) => {
     form.addEventListener("submit", (event) => {
+      event.preventDefault();
       const isValid = validateForm(form);
-
-      if (!isValid) {
-        event.preventDefault();
-      }
+      if (!isValid) return;
+      saveUserData();
+      form.reset();
+      const passwordRulesBlocks = document.querySelectorAll(".password-rules-block");
+      passwordRulesBlocks.forEach((block) => {
+        block.classList.remove("show");
+        resetPasswordRules(block);
+      });
+      showSuccessPopup();
     });
   });
+}
+
+function saveUserData() {
+  const user = {
+    fullName: document.getElementById("full-name").value.trim(),
+    email: document.getElementById("sign-up-email").value.trim(),
+    phone: document.getElementById("sign-up-number").value.trim(),
+    role: document.getElementById("role-select").value,
+    password: document.getElementById("sign-up-password").value,
+  };
+
+  localStorage.setItem("registeredUser", JSON.stringify(user));
+  console.log("User Saved:", user);
 }
 
 function validateForm(form) {
@@ -183,6 +210,15 @@ function validateField(field) {
   if (!value) {
     showFieldError(field, "This field is required");
     return false;
+  }
+  if (field.id === "sign-up-email") {
+    return validateEmail(field);
+  }
+  if (field.id === "sign-up-number") {
+    return validatePhone(field);
+  }
+  if (field.id === "sign-up-password") {
+    return validatePassword(field);
   }
   removeFieldError(field);
   return true;
@@ -237,16 +273,160 @@ function togglePasswordVisibility(input, toggle) {
   }
 }
 
+function validatePassword(field) {
+  const password = field.value;
+  const hasLength = password.length >= 8;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
+  const isValid = hasLength && hasUppercase && hasNumber && hasSpecial;
+
+  if (!isValid) {
+    showFieldError(field, "Password does not meet all requirements");
+    return false;
+  }
+
+  removeFieldError(field);
+  return true;
+}
+
 function initializeErrorCleanup() {
   const fields = document.querySelectorAll("input[required], select[required], textarea[required]");
 
   fields.forEach((field) => {
     const eventType = field.tagName === "SELECT" ? "change" : "input";
-
     field.addEventListener(eventType, () => {
       if (field.value.trim()) {
         removeFieldError(field);
       }
     });
+  });
+}
+
+// -------
+// Phone validation function
+// -------
+const phoneInput = document.getElementById("sign-up-number");
+phoneInput.addEventListener("input", function () {
+  this.value = this.value.replace(/\D/g, "").slice(0, 10);
+});
+
+function validatePhone(field) {
+  const phone = field.value.trim();
+  if (phone.length !== 10) {
+    showFieldError(field, "Phone number must be 10 digits");
+    return false;
+  }
+  removeFieldError(field);
+  return true;
+}
+
+// -------
+// Email validation function
+// -------
+function validateEmail(field) {
+  const email = field.value.trim();
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(email)) {
+    showFieldError(field, "Please enter a valid email address");
+    return false;
+  }
+
+  removeFieldError(field);
+  return true;
+}
+
+// -------
+// Success Popup
+// -------
+function showSuccessPopup() {
+  const popup = document.getElementById("success-popup");
+  if (!popup) return;
+  popup.classList.add("show");
+}
+function hideSuccessPopup() {
+  const popup = document.getElementById("success-popup");
+  if (!popup) return;
+  popup.classList.remove("show");
+}
+
+// -------
+// Main Page Dynamic Username
+// -------
+const userName = document.getElementById("user-name");
+const userData = JSON.parse(localStorage.getItem("userData"));
+if (userData) {
+  userName.textContent = userData.fullName;
+}
+
+// -------
+// Login Validation Function
+// -------
+function validateLogin(email, password) {
+  const storedUser = JSON.parse(localStorage.getItem("userData"));
+
+  if (!storedUser) {
+    return {
+      success: false,
+      message: "No account found",
+    };
+  }
+  if (email !== storedUser.email) {
+    return {
+      success: false,
+      field: "email",
+      message: "Email not found",
+    };
+  }
+  if (password !== storedUser.password) {
+    return {
+      success: false,
+      field: "password",
+      message: "Incorrect password",
+    };
+  }
+
+  return {
+    success: true,
+  };
+}
+
+// -------
+// Login Session Function
+// -------
+function createLoginSession(rememberMe) {
+  const sessionData = {
+    isLoggedIn: true,
+    loginTime: Date.now(),
+    rememberMe,
+  };
+  localStorage.setItem("loginSession", JSON.stringify(sessionData));
+}
+
+// -------
+// Sign In Submit Event
+// -------
+const signInForm = document.querySelector(".sign-in-form");
+if (signInForm) {
+  signInForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("sign-in-email").value;
+    const password = document.getElementById("sign-in-password").value;
+    const rememberMe = document.getElementById("remember-me-option").checked;
+    const loginResult = validateLogin(email, password);
+
+    if (!loginResult.success) {
+      if (loginResult.field === "email") {
+        showFieldError(document.getElementById("sign-in-email"), loginResult.message);
+      }
+      if (loginResult.field === "password") {
+        showFieldError(document.getElementById("sign-in-password"), loginResult.message);
+      }
+      return;
+    }
+    createLoginSession(rememberMe);
+    window.location.href = "main.html";
   });
 }

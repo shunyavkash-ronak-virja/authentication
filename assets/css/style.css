@@ -20,7 +20,7 @@
   box-sizing: border-box;
 }
 
-/* ----- Global Css ----- */
+/* ---------------- Global Css ---------------- */
 body {
   font-family: "Roboto", sans-serif;
   font-size: 16px;
@@ -149,12 +149,13 @@ input[type="password"] {
 .primary-link:hover {
   color: var(--primary-200);
 }
-/* ----- End Global Css ----- */
+/* ---------------- End Global Css ---------------- */
 
 .section-main-wrapper {
   background-color: var(--white);
   padding: 40px;
   border-radius: 20px;
+  animation: fadeIn 0.3s ease;
 }
 
 .form-description {
@@ -298,7 +299,57 @@ input[type="password"] {
   transition: all 0.3s ease-in-out;
 }
 
-/* ----------------- Forgot Password Page ----------------- */
+.success-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.success-popup.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.success-popup-content {
+  max-width: 420px;
+  width: calc(100% - 40px);
+  background: var(--white);
+  padding: 32px;
+  border-radius: 16px;
+  text-align: center;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}
+
+.success-popup.show .success-popup-content {
+  transform: scale(1);
+}
+
+.success-popup-icon {
+  width: 76px;
+  margin-inline: auto;
+  margin-bottom: 10px;
+}
+
+.success-popup-title {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--sambucus);
+}
+
+.success-popup-description {
+  color: var(--vesper-violet);
+  margin-bottom: 24px;
+}
+
+/* ---------------- Forgot Password Page ---------------- */
 .otp-input-group {
   display: flex;
   justify-content: center;
@@ -332,16 +383,126 @@ input[type="password"] {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    /* transform: translateY(12px); */
+    transform: translateY(12px);
   }
 
   to {
     opacity: 1;
-    /* transform: translateY(0); */
+    transform: translateY(0);
   }
 }
 
-/* ----- progress item flow ----- */
+/* ---------------- Welcome Page ---------------- */
+.welcome-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
+}
+
+.bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+}
+
+.bg-shape-1,
+.bg-shape-2 {
+  width: 100%;
+  aspect-ratio: 1;
+  filter: blur(120px);
+  background: rgba(21, 112, 239, 0.15);
+}
+
+.bg-shape-1 {
+  max-width: 300px;
+  top: -100px;
+  left: -100px;
+}
+
+.bg-shape-2 {
+  max-width: 350px;
+  bottom: -120px;
+  right: -120px;
+}
+
+.welcome-card {
+  width: 100%;
+  max-width: 550px;
+  padding: 50px 40px;
+  text-align: center;
+  border-radius: 24px;
+  border: 1px solid var(--white-200);
+  box-shadow: 0 20px 60px rgba(21, 112, 239, 0.1);
+  background: white;
+  z-index: 1;
+}
+
+.welcome-icon {
+  display: inline-block;
+  font-size: 64px;
+  margin-bottom: 24px;
+  animation: wave 2s infinite;
+}
+
+.welcome-title {
+  font-size: 42px;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+#user-name {
+  display: block;
+  margin-top: 8px;
+}
+
+.welcome-description {
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  15% {
+    transform: rotate(15deg);
+  }
+
+  30% {
+    transform: rotate(-10deg);
+  }
+
+  45% {
+    transform: rotate(15deg);
+  }
+
+  60% {
+    transform: rotate(0deg);
+  }
+}
+
+@media (max-width: 575px) {
+  .welcome-card {
+    padding: 40px 24px;
+  }
+  .welcome-title {
+    font-size: 32px;
+  }
+  .welcome-icon {
+    font-size: 50px;
+  }
+  .welcome-description {
+    font-size: 16px;
+  }
+}
+
+/* ---------------- progress item flow ---------------- */
 /* .forgot-password-progress {
   display: flex;
   align-items: center;
