@@ -133,22 +133,23 @@ function resetPasswordRules(rulesBlock) {
 }
 
 function initializeFormValidation() {
-  const forms = document.querySelectorAll("form");
+  const signUpForm = document.querySelector(".sign-up-form");
+  if (!signUpForm) return;
 
-  forms.forEach((form) => {
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const isValid = validateForm(form);
-      if (!isValid) return;
-      saveUserData();
-      form.reset();
-      const passwordRulesBlocks = document.querySelectorAll(".password-rules-block");
-      passwordRulesBlocks.forEach((block) => {
-        block.classList.remove("show");
-        resetPasswordRules(block);
-      });
-      showSuccessPopup();
+  signUpForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const isValid = validateForm(signUpForm);
+    if (!isValid) return;
+    saveUserData();
+    signUpForm.reset();
+    const passwordRulesBlocks = document.querySelectorAll(".password-rules-block");
+    passwordRulesBlocks.forEach((block) => {
+      block.classList.remove("show");
+      resetPasswordRules(block);
     });
+
+    showSuccessPopup();
   });
 }
 
@@ -186,18 +187,18 @@ function validateForm(form) {
 }
 
 function showFieldError(field, message) {
-  field.classList.add("error");
   const fieldGroup = field.closest(".form-input-group");
+
   if (!fieldGroup) return;
-  const existingError = fieldGroup.querySelector(".input-error-message");
-  if (existingError) {
-    existingError.textContent = message;
-    return;
+  field.classList.add("error");
+  let errorElement = fieldGroup.querySelector(".input-error-message");
+  if (!errorElement) {
+    errorElement = document.createElement("p");
+    errorElement.classList.add("input-error-message");
+    fieldGroup.appendChild(errorElement);
   }
-  const errorElement = document.createElement("p");
-  errorElement.className = "input-error-message";
+
   errorElement.textContent = message;
-  fieldGroup.appendChild(errorElement);
 }
 
 function removeFieldError(field) {
@@ -434,14 +435,12 @@ if (signInForm) {
     const password = document.getElementById("sign-in-password").value;
     const rememberCheckbox = document.getElementById("remember-me-option");
     const loginResult = validateLogin(email, password);
-    const checkboxError = document.querySelector(".checkbox-error-message");
 
     if (!rememberCheckbox.checked) {
-      checkboxError.textContent = "Please check Remember me before signing in";
+      showFieldError(rememberCheckbox, "Please check Remember me before signing in");
       return;
     }
-    checkboxError.textContent = "";
-    const rememberMe = rememberCheckbox.checked;
+    removeFieldError(rememberCheckbox);
 
     if (!loginResult.success) {
       if (loginResult.field === "email") {
@@ -452,8 +451,7 @@ if (signInForm) {
       }
       return;
     }
-
-    createLoginSession(rememberMe);
+    createLoginSession(rememberCheckbox.checked);
     window.location.href = "main.html";
   });
 }

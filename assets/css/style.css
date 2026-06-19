@@ -29,11 +29,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* background-color: var(--white-100); */
   color: var(--oxford-blue);
   background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
-  position: relative;
-  overflow: hidden;
 }
 
 .container {
@@ -389,7 +386,6 @@ input[type="password"] {
     opacity: 0;
     transform: translateY(12px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -423,6 +419,15 @@ input[type="password"] {
   right: -120px;
 }
 
+.welcome-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
 .welcome-icon {
   display: inline-block;
   font-size: 64px;
@@ -448,19 +453,15 @@ input[type="password"] {
   100% {
     transform: rotate(0deg);
   }
-
   15% {
     transform: rotate(15deg);
   }
-
   30% {
     transform: rotate(-10deg);
   }
-
   45% {
     transform: rotate(15deg);
   }
-
   60% {
     transform: rotate(0deg);
   }
@@ -469,10 +470,13 @@ input[type="password"] {
 @media (max-width: 575px) {
   .welcome-title {
     font-size: 32px;
+    margin-block: 16px 14px;
   }
+
   .welcome-icon {
     font-size: 50px;
   }
+
   .welcome-description {
     font-size: 16px;
   }
