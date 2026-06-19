@@ -153,16 +153,21 @@ function initializeFormValidation() {
 }
 
 function saveUserData() {
-  const user = {
+  const userData = {
     fullName: document.getElementById("full-name").value.trim(),
     email: document.getElementById("sign-up-email").value.trim(),
     phone: document.getElementById("sign-up-number").value.trim(),
     role: document.getElementById("role-select").value,
     password: document.getElementById("sign-up-password").value,
+    // fullName: fullNameInput.value.trim(),
+    // email: emailInput.value.trim(),
+    // phone: phoneInput.value.trim(),
+    // role: roleSelect.value,
+    // password: passwordInput.value,
   };
 
-  localStorage.setItem("registeredUser", JSON.stringify(user));
-  console.log("User Saved:", user);
+  localStorage.setItem("registeredUser", JSON.stringify(userData));
+  console.log("User Saved:", userData);
 }
 
 function validateForm(form) {
@@ -364,11 +369,14 @@ function hideSuccessPopup() {
 // -------
 // Main Page Dynamic Username
 // -------
-const userName = document.getElementById("user-name");
-const userData = JSON.parse(localStorage.getItem("registeredUser"));
-if (userName && userData) {
-  userName.textContent = userData.fullName;
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const userName = document.getElementById("user-name");
+  const userData = JSON.parse(localStorage.getItem("registeredUser"));
+
+  if (userName && userData) {
+    userName.textContent = userData.fullName;
+  }
+});
 
 // -------
 // Login Validation Function
@@ -424,8 +432,16 @@ if (signInForm) {
 
     const email = document.getElementById("sign-in-email").value;
     const password = document.getElementById("sign-in-password").value;
-    const rememberMe = document.getElementById("remember-me-option").checked;
+    const rememberCheckbox = document.getElementById("remember-me-option");
     const loginResult = validateLogin(email, password);
+    const checkboxError = document.querySelector(".checkbox-error-message");
+
+    if (!rememberCheckbox.checked) {
+      checkboxError.textContent = "Please check Remember me before signing in";
+      return;
+    }
+    checkboxError.textContent = "";
+    const rememberMe = rememberCheckbox.checked;
 
     if (!loginResult.success) {
       if (loginResult.field === "email") {
@@ -436,6 +452,7 @@ if (signInForm) {
       }
       return;
     }
+
     createLoginSession(rememberMe);
     window.location.href = "main.html";
   });
