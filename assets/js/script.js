@@ -307,9 +307,11 @@ function initializeErrorCleanup() {
 // Phone validation function
 // -------
 const phoneInput = document.getElementById("sign-up-number");
-phoneInput.addEventListener("input", function () {
-  this.value = this.value.replace(/\D/g, "").slice(0, 10);
-});
+if (phoneInput) {
+  phoneInput.addEventListener("input", function () {
+    this.value = this.value.replace(/\D/g, "").slice(0, 10);
+  });
+}
 
 function validatePhone(field) {
   const phone = field.value.trim();
@@ -326,15 +328,23 @@ function validatePhone(field) {
 // -------
 function validateEmail(field) {
   const email = field.value.trim();
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!emailPattern.test(email)) {
+  if (!email) {
+    showFieldError(field, "This field is required");
+    return false;
+  }
+  if (!isValidEmail(email)) {
     showFieldError(field, "Please enter a valid email address");
     return false;
   }
 
   removeFieldError(field);
   return true;
+}
+
+function isValidEmail(email) {
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|outlook|hotmail)\.(com|in)$/;
+  return emailPattern.test(email);
 }
 
 // -------
@@ -355,8 +365,8 @@ function hideSuccessPopup() {
 // Main Page Dynamic Username
 // -------
 const userName = document.getElementById("user-name");
-const userData = JSON.parse(localStorage.getItem("userData"));
-if (userData) {
+const userData = JSON.parse(localStorage.getItem("registeredUser"));
+if (userName && userData) {
   userName.textContent = userData.fullName;
 }
 
@@ -364,7 +374,7 @@ if (userData) {
 // Login Validation Function
 // -------
 function validateLogin(email, password) {
-  const storedUser = JSON.parse(localStorage.getItem("userData"));
+  const storedUser = JSON.parse(localStorage.getItem("registeredUser"));
 
   if (!storedUser) {
     return {
