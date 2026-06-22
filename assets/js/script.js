@@ -141,14 +141,17 @@ function initializeFormValidation() {
 
     const isValid = validateForm(signUpForm);
     if (!isValid) return;
-    saveUserData();
+    const userSaved = saveUserData();
+    if (!userSaved) {
+      return;
+    }
+
     signUpForm.reset();
     const passwordRulesBlocks = document.querySelectorAll(".password-rules-block");
     passwordRulesBlocks.forEach((block) => {
       block.classList.remove("show");
       resetPasswordRules(block);
     });
-
     showSuccessPopup();
   });
 }
@@ -160,15 +163,19 @@ function saveUserData() {
     phone: document.getElementById("sign-up-number").value.trim(),
     role: document.getElementById("role-select").value,
     password: document.getElementById("sign-up-password").value,
-    // fullName: fullNameInput.value.trim(),
-    // email: emailInput.value.trim(),
-    // phone: phoneInput.value.trim(),
-    // role: roleSelect.value,
-    // password: passwordInput.value,
   };
 
-  localStorage.setItem("registeredUser", JSON.stringify(userData));
-  console.log("User Saved:", userData);
+  let users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  const emailExists = users.some((user) => user.email === userData.email);
+  if (emailExists) {
+    alert("Email already registered");
+    return false;
+  }
+
+  users.push(userData);
+  localStorage.setItem("registeredUsers", JSON.stringify(users));
+  console.log("All Users:", users);
+  return true;
 }
 
 function validateForm(form) {
@@ -372,7 +379,7 @@ function hideSuccessPopup() {
 // -------
 document.addEventListener("DOMContentLoaded", () => {
   const userName = document.getElementById("user-name");
-  const userData = JSON.parse(localStorage.getItem("registeredUser"));
+  const userData = JSON.parse(localStorage.getItem("currentUser"));
 
   if (userName && userData) {
     userName.textContent = userData.fullName;
@@ -383,29 +390,24 @@ document.addEventListener("DOMContentLoaded", () => {
 // Login Validation Function
 // -------
 function validateLogin(email, password) {
-  const storedUser = JSON.parse(localStorage.getItem("registeredUser"));
+  const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  const matchedUser = users.find((user) => user.email === email);
 
-  if (!storedUser) {
-    return {
-      success: false,
-      message: "No account found",
-    };
-  }
-  if (email !== storedUser.email) {
+  if (!matchedUser) {
     return {
       success: false,
       field: "email",
       message: "Email not found",
     };
   }
-  if (password !== storedUser.password) {
+  if (matchedUser.password !== password) {
     return {
       success: false,
       field: "password",
       message: "Incorrect password",
     };
   }
-
+  localStorage.setItem("currentUser", JSON.stringify(matchedUser));
   return {
     success: true,
   };
@@ -431,8 +433,8 @@ if (signInForm) {
   signInForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const email = document.getElementById("sign-in-email").value;
-    const password = document.getElementById("sign-in-password").value;
+    const email = document.getElementById("sign-in-email").value.trim();
+    const password = document.getElementById("sign-in-password").value.trim();
     const rememberCheckbox = document.getElementById("remember-me-option");
     const loginResult = validateLogin(email, password);
 

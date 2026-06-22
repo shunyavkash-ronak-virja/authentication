@@ -25,10 +25,6 @@ body {
   font-family: "Roboto", sans-serif;
   font-size: 16px;
   line-height: 1.2;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: var(--oxford-blue);
   background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
 }
@@ -49,7 +45,11 @@ h1,
 
 section {
   width: 100%;
-  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding-inline: 20px; */
 }
 
 .font-vesper {
