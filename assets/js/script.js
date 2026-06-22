@@ -43,12 +43,14 @@ function updatePasswordRules(input, rulesBlock) {
   const rules = {
     length: password.length >= 8,
     uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
     number: /\d/.test(password),
     special: /[^A-Za-z0-9]/.test(password),
   };
 
   updateRuleUI(rulesBlock, "length", rules.length);
   updateRuleUI(rulesBlock, "uppercase", rules.uppercase);
+  updateRuleUI(rulesBlock, "lowercase", rules.lowercase);
   updateRuleUI(rulesBlock, "number", rules.number);
   updateRuleUI(rulesBlock, "special", rules.special);
   updatePasswordStrength(rulesBlock, rules);
@@ -85,17 +87,23 @@ function updatePasswordStrength(rulesBlock, rules) {
   switch (completedRules) {
     case 2:
       strengthText = "Medium";
-      strengthValue = 50;
-      strengthColor = "var(--orange)";
+      strengthValue = 40;
+      strengthColor = "var(--red)";
       break;
 
     case 3:
       strengthText = "Good";
-      strengthValue = 75;
-      strengthColor = "var(--yellow)";
+      strengthValue = 60;
+      strengthColor = "var(--orange)";
       break;
 
     case 4:
+      strengthText = "Very Good";
+      strengthValue = 80;
+      strengthColor = "var(--yellow)";
+      break;
+
+    case 5:
       strengthText = "Strong";
       strengthValue = 100;
       strengthColor = "var(--green)";
@@ -233,6 +241,10 @@ function validateField(field) {
   if (field.id === "sign-up-password") {
     return validatePassword(field);
   }
+  if (field.id === "confirm-password") {
+    return validateConfirmPassword(field);
+  }
+
   removeFieldError(field);
   return true;
 }
@@ -290,12 +302,26 @@ function validatePassword(field) {
   const password = field.value;
   const hasLength = password.length >= 8;
   const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
   const hasNumber = /\d/.test(password);
   const hasSpecial = /[^A-Za-z0-9]/.test(password);
-  const isValid = hasLength && hasUppercase && hasNumber && hasSpecial;
+  const isValid = hasLength && hasUppercase && hasLowercase && hasNumber && hasSpecial;
 
   if (!isValid) {
     showFieldError(field, "Password does not meet all requirements");
+    return false;
+  }
+
+  removeFieldError(field);
+  return true;
+}
+
+function validateConfirmPassword(field) {
+  const password = document.getElementById("sign-up-password").value.trim();
+  const confirmPassword = field.value.trim();
+
+  if (password !== confirmPassword) {
+    showFieldError(field, "Passwords do not match");
     return false;
   }
 
@@ -314,6 +340,23 @@ function initializeErrorCleanup() {
       }
     });
   });
+
+  const confirmPasswordInput = document.getElementById("confirm-password");
+  const passwordInput = document.getElementById("sign-up-password");
+
+  if (confirmPasswordInput) {
+    confirmPasswordInput.addEventListener("input", () => {
+      validateConfirmPassword(confirmPasswordInput);
+    });
+  }
+
+  if (passwordInput && confirmPasswordInput) {
+    passwordInput.addEventListener("input", () => {
+      if (confirmPasswordInput.value.trim()) {
+        validateConfirmPassword(confirmPasswordInput);
+      }
+    });
+  }
 }
 
 // -------

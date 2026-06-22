@@ -49,7 +49,7 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* padding-inline: 20px; */
+  padding-block: 20px;
 }
 
 .font-vesper {
@@ -232,6 +232,12 @@ input[type="password"] {
   width: 100%;
   height: 100%;
   position: absolute;
+  transition: all 0.3s ease-in-out;
+}
+
+.icon-visibility {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .password-rules-block {
@@ -292,12 +298,6 @@ input[type="password"] {
   width: 100%;
   height: 100%;
   position: absolute;
-}
-
-.icon-visibility {
-  visibility: hidden;
-  opacity: 0;
-  transition: all 0.3s ease-in-out;
 }
 
 .success-popup {
