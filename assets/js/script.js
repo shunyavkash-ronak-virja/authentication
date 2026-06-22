@@ -135,23 +135,24 @@ function resetPasswordRules(rulesBlock) {
 function initializeFormValidation() {
   const signUpForm = document.querySelector(".sign-up-form");
   if (!signUpForm) return;
-
   signUpForm.addEventListener("submit", (event) => {
     event.preventDefault();
-
     const isValid = validateForm(signUpForm);
-    if (!isValid) return;
-    const userSaved = saveUserData();
-    if (!userSaved) {
+    if (!isValid) {
       return;
     }
-
+    const isSaved = saveUserData();
+    if (!isSaved) {
+      return;
+    }
     signUpForm.reset();
+
     const passwordRulesBlocks = document.querySelectorAll(".password-rules-block");
     passwordRulesBlocks.forEach((block) => {
       block.classList.remove("show");
       resetPasswordRules(block);
     });
+
     showSuccessPopup();
   });
 }
@@ -167,11 +168,11 @@ function saveUserData() {
 
   let users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
   const emailExists = users.some((user) => user.email === userData.email);
+
   if (emailExists) {
     alert("Email already registered");
     return false;
   }
-
   users.push(userData);
   localStorage.setItem("registeredUsers", JSON.stringify(users));
   console.log("All Users:", users);
@@ -184,7 +185,6 @@ function validateForm(form) {
 
   fields.forEach((field) => {
     const fieldValid = validateField(field);
-
     if (!fieldValid) {
       isFormValid = false;
     }
@@ -391,23 +391,25 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------
 function validateLogin(email, password) {
   const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-  const matchedUser = users.find((user) => user.email === email);
+  const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
 
-  if (!matchedUser) {
+  if (!user) {
     return {
       success: false,
       field: "email",
       message: "Email not found",
     };
   }
-  if (matchedUser.password !== password) {
+
+  if (user.password !== password) {
     return {
       success: false,
       field: "password",
       message: "Incorrect password",
     };
   }
-  localStorage.setItem("currentUser", JSON.stringify(matchedUser));
+
+  localStorage.setItem("currentUser", JSON.stringify(user));
   return {
     success: true,
   };
