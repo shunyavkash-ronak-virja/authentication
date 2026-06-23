@@ -175,15 +175,18 @@ function saveUserData() {
   };
 
   let users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-  const emailExists = users.some((user) => user.email === userData.email);
+  const emailExists = users.some(
+    (user) => user.email.toLowerCase() === userData.email.toLowerCase(),
+  );
 
   if (emailExists) {
-    alert("Email already registered");
+    const emailField = document.getElementById("sign-up-email");
+    showFieldError(emailField, "Email already registered");
     return false;
   }
+
   users.push(userData);
   localStorage.setItem("registeredUsers", JSON.stringify(users));
-  console.log("All Users:", users);
   return true;
 }
 
@@ -317,8 +320,14 @@ function validatePassword(field) {
 }
 
 function validateConfirmPassword(field) {
-  const password = document.getElementById("sign-up-password").value.trim();
+  const passwordField = document.getElementById("sign-up-password");
+  const password = passwordField.value.trim();
   const confirmPassword = field.value.trim();
+
+  if (!confirmPassword) {
+    showFieldError(field, "Please confirm your password");
+    return false;
+  }
 
   if (password !== confirmPassword) {
     showFieldError(field, "Passwords do not match");
@@ -481,14 +490,13 @@ if (signInForm) {
     const email = document.getElementById("sign-in-email").value.trim();
     const password = document.getElementById("sign-in-password").value.trim();
     const rememberCheckbox = document.getElementById("remember-me-option");
-    const loginResult = validateLogin(email, password);
 
     if (!rememberCheckbox.checked) {
       showFieldError(rememberCheckbox, "Please check Remember me before signing in");
       return;
     }
     removeFieldError(rememberCheckbox);
-
+    const loginResult = validateLogin(email, password);
     if (!loginResult.success) {
       if (loginResult.field === "email") {
         showFieldError(document.getElementById("sign-in-email"), loginResult.message);
@@ -499,6 +507,7 @@ if (signInForm) {
       return;
     }
     createLoginSession(rememberCheckbox.checked);
+
     window.location.href = "main.html";
   });
 }

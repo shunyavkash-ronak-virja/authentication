@@ -309,7 +309,7 @@ input[type="password"] {
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in-out;
 }
 
 .success-popup.show {
@@ -325,7 +325,7 @@ input[type="password"] {
   border-radius: 16px;
   text-align: center;
   transform: scale(0.9);
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in-out;
 }
 
 .success-popup.show .success-popup-content {
