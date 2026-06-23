@@ -11,6 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "sign-in.html";
     });
   }
+
+  const userName = document.getElementById("user-name");
+  const userData = JSON.parse(localStorage.getItem("currentUser"));
+  if (userName && userData) {
+    checkUserSession();
+    userName.textContent = userData.fullName;
+  }
 });
 
 function initializePasswordRules() {
@@ -435,18 +442,6 @@ function hideSuccessPopup() {
 }
 
 // -------
-// Main Page Dynamic Username
-// -------
-document.addEventListener("DOMContentLoaded", () => {
-  const userName = document.getElementById("user-name");
-  const userData = JSON.parse(localStorage.getItem("currentUser"));
-
-  if (userName && userData) {
-    userName.textContent = userData.fullName;
-  }
-});
-
-// -------
 // Login Validation Function
 // -------
 function validateLogin(email, password) {
@@ -478,13 +473,48 @@ function validateLogin(email, password) {
 // -------
 // Login Session Function
 // -------
+function checkUserSession() {
+  let sessionData =
+    JSON.parse(localStorage.getItem("loginSession")) ||
+    JSON.parse(sessionStorage.getItem("loginSession"));
+
+  if (!sessionData || !sessionData.isLoggedIn) {
+    window.location.href = "sign-in.html";
+    return;
+  }
+
+  if (sessionData.rememberMe) {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const currentTime = Date.now();
+    const sessionExpired = currentTime - sessionData.loginTime > oneDay;
+
+    if (sessionExpired) {
+      localStorage.removeItem("loginSession");
+      localStorage.removeItem("currentUser");
+
+      window.location.href = "sign-in.html";
+      return;
+    }
+  }
+}
+
+const userName = document.getElementById("user-name");
+if (userName) {
+  checkUserSession();
+}
+
 function createLoginSession(rememberMe) {
   const sessionData = {
     isLoggedIn: true,
     loginTime: Date.now(),
     rememberMe,
   };
-  localStorage.setItem("loginSession", JSON.stringify(sessionData));
+
+  if (rememberMe) {
+    localStorage.setItem("loginSession", JSON.stringify(sessionData));
+  } else {
+    sessionStorage.setItem("loginSession", JSON.stringify(sessionData));
+  }
 }
 
 // -------
@@ -499,11 +529,6 @@ if (signInForm) {
     const password = document.getElementById("sign-in-password").value.trim();
     const rememberCheckbox = document.getElementById("remember-me-option");
 
-    if (!rememberCheckbox.checked) {
-      showFieldError(rememberCheckbox, "Please check Remember me before signing in");
-      return;
-    }
-    removeFieldError(rememberCheckbox);
     const loginResult = validateLogin(email, password);
     if (!loginResult.success) {
       if (loginResult.field === "email") {
@@ -515,7 +540,6 @@ if (signInForm) {
       return;
     }
     createLoginSession(rememberCheckbox.checked);
-
     window.location.href = "main.html";
   });
 }
@@ -523,6 +547,8 @@ if (signInForm) {
 function logoutUser() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("loginSession");
+  sessionStorage.removeItem("loginSession");
+
   window.location.href = "sign-in.html";
 }
 
@@ -531,7 +557,9 @@ function logoutUser() {
 // -------
 const isMainPage = window.location.pathname.includes("main.html");
 if (isMainPage) {
-  const session = JSON.parse(localStorage.getItem("loginSession"));
+  const session =
+    JSON.parse(localStorage.getItem("loginSession")) ||
+    JSON.parse(sessionStorage.getItem("loginSession"));
 
   if (!session?.isLoggedIn) {
     window.location.href = "sign-in.html";
@@ -543,6 +571,7 @@ if (logoutButton) {
   logoutButton.addEventListener("click", () => {
     localStorage.removeItem("currentUser");
     localStorage.removeItem("loginSession");
+    sessionStorage.removeItem("loginSession");
     window.location.href = "sign-in.html";
   });
 }
