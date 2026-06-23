@@ -446,6 +446,7 @@ input[type="password"] {
 
 .welcome-description {
   font-size: 18px;
+  margin-bottom: 24px;
 }
 
 @keyframes wave {
@@ -483,29 +484,30 @@ input[type="password"] {
 }
 
 /* ---------------- progress item flow ---------------- */
-/* .forgot-password-progress {
+.forgot-password-progress {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   margin-bottom: 32px;
 }
 
 .progress-item {
   color: var(--vesper-violet);
   font-size: 14px;
+  transition: all 0.3s ease-in-out;
 }
 
 .progress-item.active {
   color: var(--primary);
-  font-weight: 500;
 }
 
 .progress-divider {
-  width: 40px;
+  width: 100%;
+  max-width: 40px;
   height: 2px;
   background-color: var(--white-200);
-  margin-inline: 12px;
-} */
+}
 /* ----- End progress item flow ----- */
 
 @media (max-width: 575px) {

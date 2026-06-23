@@ -168,7 +168,7 @@ function initializeFormValidation() {
 function saveUserData() {
   const userData = {
     fullName: document.getElementById("full-name").value.trim(),
-    email: document.getElementById("sign-up-email").value.trim(),
+    email: document.getElementById("sign-up-email").value.trim().toLowerCase(),
     phone: document.getElementById("sign-up-number").value.trim(),
     role: document.getElementById("role-select").value,
     password: document.getElementById("sign-up-password").value,
@@ -355,15 +355,23 @@ function initializeErrorCleanup() {
 
   if (confirmPasswordInput) {
     confirmPasswordInput.addEventListener("input", () => {
+      if (!confirmPasswordInput.value.trim()) {
+        removeFieldError(confirmPasswordInput);
+        return;
+      }
+
       validateConfirmPassword(confirmPasswordInput);
     });
   }
 
   if (passwordInput && confirmPasswordInput) {
     passwordInput.addEventListener("input", () => {
-      if (confirmPasswordInput.value.trim()) {
-        validateConfirmPassword(confirmPasswordInput);
+      if (!confirmPasswordInput.value.trim()) {
+        removeFieldError(confirmPasswordInput);
+        return;
       }
+
+      validateConfirmPassword(confirmPasswordInput);
     });
   }
 }
@@ -443,7 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // -------
 function validateLogin(email, password) {
   const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-  const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
+  const user = users.find((u) => u.email === email);
 
   if (!user) {
     return {
@@ -487,7 +495,7 @@ if (signInForm) {
   signInForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const email = document.getElementById("sign-in-email").value.trim();
+    const email = document.getElementById("sign-in-email").value.trim().toLowerCase();
     const password = document.getElementById("sign-in-password").value.trim();
     const rememberCheckbox = document.getElementById("remember-me-option");
 
@@ -509,5 +517,32 @@ if (signInForm) {
     createLoginSession(rememberCheckbox.checked);
 
     window.location.href = "main.html";
+  });
+}
+
+function logoutUser() {
+  localStorage.removeItem("currentUser");
+  localStorage.removeItem("loginSession");
+  window.location.href = "sign-in.html";
+}
+
+// -------
+// Main Page Protection
+// -------
+const isMainPage = window.location.pathname.includes("main.html");
+if (isMainPage) {
+  const session = JSON.parse(localStorage.getItem("loginSession"));
+
+  if (!session?.isLoggedIn) {
+    window.location.href = "sign-in.html";
+  }
+}
+
+const logoutButton = document.getElementById("logout-btn");
+if (logoutButton) {
+  logoutButton.addEventListener("click", () => {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("loginSession");
+    window.location.href = "sign-in.html";
   });
 }
