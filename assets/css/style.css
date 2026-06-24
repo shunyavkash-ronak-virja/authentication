@@ -483,33 +483,6 @@ input[type="password"] {
   }
 }
 
-/* ---------------- progress item flow ---------------- */
-.forgot-password-progress {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.progress-item {
-  color: var(--vesper-violet);
-  font-size: 14px;
-  transition: all 0.3s ease-in-out;
-}
-
-.progress-item.active {
-  color: var(--primary);
-}
-
-.progress-divider {
-  width: 100%;
-  max-width: 40px;
-  height: 2px;
-  background-color: var(--white-200);
-}
-/* ----- End progress item flow ----- */
-
 @media (max-width: 575px) {
   h1 {
     font-size: 32px;
