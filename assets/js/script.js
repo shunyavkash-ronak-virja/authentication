@@ -20,6 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+let generatedOTP = "";
+let resetEmail = "";
+
 function initializePasswordRules() {
   const passwordInputs = document.querySelectorAll("[data-password-input]");
 
@@ -212,8 +215,9 @@ function validateForm(form) {
 }
 
 function showFieldError(field, message) {
-  const fieldGroup = field.closest(".form-input-group");
-
+  const fieldGroup = field.classList.contains("form-input-group")
+    ? field
+    : field.closest(".form-input-group");
   if (!fieldGroup) return;
   field.classList.add("error");
   let errorElement = fieldGroup.querySelector(".input-error-message");
@@ -222,14 +226,15 @@ function showFieldError(field, message) {
     errorElement.classList.add("input-error-message");
     fieldGroup.appendChild(errorElement);
   }
-
   errorElement.textContent = message;
 }
 
 function removeFieldError(field) {
-  field.classList.remove("error");
-  const fieldGroup = field.closest(".form-input-group");
+  const fieldGroup = field.classList.contains("form-input-group")
+    ? field
+    : field.closest(".form-input-group");
   if (!fieldGroup) return;
+  field.classList.remove("error");
   const errorElement = fieldGroup.querySelector(".input-error-message");
   if (errorElement) {
     errorElement.remove();
@@ -544,11 +549,123 @@ if (signInForm) {
   });
 }
 
+const forgotPasswordForm = document.querySelector(".forgot-password-form");
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const emailField = document.getElementById("forgot-email");
+    const email = emailField.value.trim().toLowerCase();
+    const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+    const user = users.find((u) => u.email === email);
+
+    if (!user) {
+      showFieldError(emailField, "Email not found");
+      return;
+    }
+    removeFieldError(emailField);
+    resetEmail = email;
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("Generated OTP:", generatedOTP);
+    showForgotPasswordStep("otp-step");
+  });
+}
+
+const verifyOtpButton = document.getElementById("verify-otp-btn");
+if (verifyOtpButton) {
+  verifyOtpButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    const otpInputs = document.querySelectorAll(".otp-input");
+    let enteredOTP = "";
+
+    otpInputs.forEach((input) => {
+      enteredOTP += input.value;
+    });
+
+    const otpGroup = document.getElementById("otp-group");
+    if (enteredOTP !== generatedOTP) {
+      showFieldError(otpGroup, "Invalid OTP");
+      return;
+    }
+
+    removeFieldError(otpGroup);
+    showForgotPasswordStep("reset-step");
+  });
+}
+
+const resendButton = document.querySelector(".otp-resend-btn");
+if (resendButton) {
+  resendButton.addEventListener("click", () => {
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("New OTP:", generatedOTP);
+  });
+}
+
+const resetForm = document.querySelector("#reset-step form");
+if (resetForm) {
+  resetForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const passwordField = document.getElementById("new-password");
+    const confirmField = document.getElementById("confirm-new-password");
+    const isPasswordValid = validatePassword(passwordField);
+
+    if (!isPasswordValid) {
+      return;
+    }
+
+    if (passwordField.value.trim() !== confirmField.value.trim()) {
+      showFieldError(confirmField, "Passwords do not match");
+      return;
+    }
+    removeFieldError(confirmField);
+    let users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+    users = users.map((user) => {
+      if (user.email === resetEmail) {
+        user.password = passwordField.value;
+      }
+      return user;
+    });
+    localStorage.setItem("registeredUsers", JSON.stringify(users));
+    alert("Password updated successfully");
+    window.location.href = "sign-in.html";
+  });
+}
+
+// -------
+// OTP Input Auto Move
+// -------
+const otpInputs = document.querySelectorAll(".otp-input");
+otpInputs.forEach((input, index) => {
+  input.addEventListener("input", (event) => {
+    event.target.value = event.target.value.replace(/\D/g, "");
+    if (event.target.value && otpInputs[index + 1]) {
+      otpInputs[index + 1].focus();
+    }
+  });
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Backspace" && !input.value && otpInputs[index - 1]) {
+      otpInputs[index - 1].focus();
+    }
+  });
+
+  input.addEventListener("paste", (event) => {
+    event.preventDefault();
+    const pastedOTP = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, otpInputs.length);
+    pastedOTP.split("").forEach((digit, i) => {
+      otpInputs[i].value = digit;
+    });
+    const focusIndex = Math.min(pastedOTP.length - 1, otpInputs.length - 1);
+    otpInputs[focusIndex]?.focus();
+  });
+});
+
 function logoutUser() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("loginSession");
   sessionStorage.removeItem("loginSession");
-
   window.location.href = "sign-in.html";
 }
 
@@ -574,4 +691,12 @@ if (logoutButton) {
     sessionStorage.removeItem("loginSession");
     window.location.href = "sign-in.html";
   });
+}
+
+function showForgotPasswordStep(stepId) {
+  const steps = document.querySelectorAll(".forgot-password-step");
+  steps.forEach((step) => {
+    step.classList.remove("active-step");
+  });
+  document.getElementById(stepId)?.classList.add("active-step");
 }
