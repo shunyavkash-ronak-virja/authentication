@@ -4,10 +4,18 @@ document.addEventListener("DOMContentLoaded", () => {
   initializePasswordToggle();
   initializeErrorCleanup();
 
-  const successButton = document.getElementById("success-popup-btn");
-  if (successButton) {
-    successButton.addEventListener("click", () => {
-      hideSuccessPopup();
+  const signUpSuccessBtn = document.getElementById("success-popup-btn");
+  if (signUpSuccessBtn) {
+    signUpSuccessBtn.addEventListener("click", () => {
+      hideSuccessPopup("success-popup");
+      window.location.href = "sign-in.html";
+    });
+  }
+
+  const resetSuccessBtn = document.getElementById("reset-success-btn");
+  if (resetSuccessBtn) {
+    resetSuccessBtn.addEventListener("click", () => {
+      hideSuccessPopup("reset-success-popup");
       window.location.href = "sign-in.html";
     });
   }
@@ -171,7 +179,7 @@ function initializeFormValidation() {
       resetPasswordRules(block);
     });
 
-    showSuccessPopup();
+    showSuccessPopup("success-popup");
   });
 }
 
@@ -215,11 +223,15 @@ function validateForm(form) {
 }
 
 function showFieldError(field, message) {
-  const fieldGroup = field.classList.contains("form-input-group")
-    ? field
-    : field.closest(".form-input-group");
+  let fieldGroup;
+  if (field.classList.contains("form-input-group")) {
+    fieldGroup = field;
+  } else if (field.tagName === "FORM") {
+    fieldGroup = field;
+  } else {
+    fieldGroup = field.closest(".form-input-group");
+  }
   if (!fieldGroup) return;
-  field.classList.add("error");
   let errorElement = fieldGroup.querySelector(".input-error-message");
   if (!errorElement) {
     errorElement = document.createElement("p");
@@ -230,9 +242,14 @@ function showFieldError(field, message) {
 }
 
 function removeFieldError(field) {
-  const fieldGroup = field.classList.contains("form-input-group")
-    ? field
-    : field.closest(".form-input-group");
+  let fieldGroup;
+  if (field.classList.contains("form-input-group")) {
+    fieldGroup = field;
+  } else if (field.tagName === "FORM") {
+    fieldGroup = field;
+  } else {
+    fieldGroup = field.closest(".form-input-group");
+  }
   if (!fieldGroup) return;
   field.classList.remove("error");
   const errorElement = fieldGroup.querySelector(".input-error-message");
@@ -435,13 +452,14 @@ function isValidEmail(email) {
 // -------
 // Success Popup
 // -------
-function showSuccessPopup() {
-  const popup = document.getElementById("success-popup");
+function showSuccessPopup(popupId) {
+  const popup = document.getElementById(popupId);
   if (!popup) return;
   popup.classList.add("show");
 }
-function hideSuccessPopup() {
-  const popup = document.getElementById("success-popup");
+
+function hideSuccessPopup(popupId) {
+  const popup = document.getElementById(popupId);
   if (!popup) return;
   popup.classList.remove("show");
 }
@@ -581,13 +599,12 @@ if (verifyOtpButton) {
       enteredOTP += input.value;
     });
 
-    const otpGroup = document.getElementById("otp-group");
+    const otpWrapper = document.getElementById("otp-wrapper");
     if (enteredOTP !== generatedOTP) {
-      showFieldError(otpGroup, "Invalid OTP");
+      showFieldError(otpWrapper, "Invalid OTP");
       return;
     }
-
-    removeFieldError(otpGroup);
+    removeFieldError(otpWrapper);
     showForgotPasswordStep("reset-step");
   });
 }
@@ -625,8 +642,7 @@ if (resetForm) {
       return user;
     });
     localStorage.setItem("registeredUsers", JSON.stringify(users));
-    alert("Password updated successfully");
-    window.location.href = "sign-in.html";
+    showSuccessPopup("reset-success-popup");
   });
 }
 
