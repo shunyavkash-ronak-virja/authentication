@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeFormValidation();
   initializePasswordToggle();
   initializeErrorCleanup();
+  loadUsers();
 
   const signUpSuccessBtn = document.getElementById("success-popup-btn");
   if (signUpSuccessBtn) {
@@ -563,7 +564,12 @@ if (signInForm) {
       return;
     }
     createLoginSession(rememberCheckbox.checked);
-    window.location.href = "main.html";
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (currentUser.role === "admin") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "main.html";
+    }
   });
 }
 
@@ -715,4 +721,89 @@ function showForgotPasswordStep(stepId) {
     step.classList.remove("active-step");
   });
   document.getElementById(stepId)?.classList.add("active-step");
+}
+
+// -------
+// Admin Dashboard
+// -------
+
+const userTableBody = document.getElementById("user-table-body");
+
+if (userTableBody) {
+  loadUsersTable();
+}
+
+function deleteUser(index) {
+  const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  const deletedUser = users[index];
+  users.splice(index, 1);
+  localStorage.setItem("registeredUsers", JSON.stringify(users));
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  if (currentUser && currentUser.email === deletedUser.email) {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("loginSession");
+    sessionStorage.removeItem("loginSession");
+  }
+  loadUsersTable();
+}
+
+function loadUsersTable() {
+  const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  userTableBody.innerHTML = "";
+  const template = document.getElementById("user-row-template");
+
+  users.forEach((user, index) => {
+    const clone = template.content.cloneNode(true);
+
+    clone.querySelector(".user-name").textContent = user.fullName;
+    clone.querySelector(".user-email").textContent = user.email;
+    clone.querySelector(".user-phone").textContent = user.phone;
+
+    const roleSelect = clone.querySelector(".dashboard-user-role");
+    roleSelect.value = user.role;
+
+    roleSelect.addEventListener("change", () => {
+      updateUserRole(index, roleSelect.value);
+    });
+
+    const editButton = clone.querySelector(".edit-btn");
+    editButton.addEventListener("click", () => {
+      editUser(index);
+    });
+
+    const deleteButton = clone.querySelector(".delete-btn");
+    deleteButton.addEventListener("click", () => {
+      deleteUser(index);
+    });
+
+    userTableBody.appendChild(clone);
+  });
+}
+
+function updateUserRole(index, newRole) {
+  const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  users[index].role = newRole;
+  localStorage.setItem("registeredUsers", JSON.stringify(users));
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  if (currentUser && currentUser.email === users[index].email) {
+    currentUser.role = newRole;
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  }
+}
+
+function editUser(index) {
+  const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  const user = users[index];
+  const newName = prompt("Update Name", user.fullName);
+
+  if (newName === null) return;
+  const newPhone = prompt("Update Phone", user.phone);
+  if (newPhone === null) return;
+  user.fullName = newName.trim();
+  user.phone = newPhone.trim();
+  localStorage.setItem("registeredUsers", JSON.stringify(users));
+
+  loadUsersTable();
 }
