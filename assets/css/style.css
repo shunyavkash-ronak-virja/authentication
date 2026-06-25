@@ -36,6 +36,10 @@ body {
   margin-inline: auto;
 }
 
+.lg-container {
+  max-width: 1280px;
+}
+
 h1,
 .h1 {
   font-size: 34px;
@@ -76,6 +80,7 @@ a {
 
 button {
   cursor: pointer;
+  background-color: transparent;
 }
 
 input,
@@ -193,10 +198,6 @@ input[type="password"] {
   width: 16px;
   aspect-ratio: 1;
   cursor: pointer;
-}
-
-.role-select {
-  width: 100%;
 }
 
 .role-select:invalid,
@@ -351,6 +352,30 @@ input[type="password"] {
   margin-bottom: 24px;
 }
 
+.popup-action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.secondary-btn,
+.popup-delete-btn {
+  border: 1px solid var(--white-200);
+  color: var(--oxford-blue);
+}
+
+.secondary-btn:hover {
+  background: var(--white-100);
+}
+
+.popup-delete-btn:hover {
+  border-color: var(--red);
+  background: var(--red);
+  color: var(--white);
+}
+
 /* ---------------- Forgot Password Page ---------------- */
 .otp-input-group {
   display: flex;
@@ -469,18 +494,133 @@ input[type="password"] {
   }
 }
 
-@media (max-width: 575px) {
-  .welcome-title {
-    font-size: 32px;
-    margin-block: 16px 14px;
+/* ---------------- Admin Dashboard Page ---------------- */
+.admin-dashboard-section {
+  padding: 60px 0;
+  align-items: start;
+}
+
+.admin-dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+}
+
+.dashboard-title {
+  font-size: 42px;
+}
+
+.dashboard-logout-btn {
+  max-width: max-content;
+}
+
+.dashboard-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--white-200);
+  border-radius: 16px;
+  background-color: var(--white);
+}
+
+.dashboard-user-table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: collapse;
+}
+
+.dashboard-thead {
+  color: var(--white);
+  background-color: var(--primary);
+}
+
+.dashboard-user-table th {
+  font-weight: 600;
+  text-align: left;
+  padding: 18px 24px;
+  white-space: nowrap;
+}
+
+.dashboard-user-table td {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--white-200);
+  vertical-align: middle;
+}
+
+.dashboard-user-role {
+  border-width: 1px;
+  max-width: 130px;
+  margin-top: 0;
+  padding: 8px 10px;
+}
+
+.dashboard-user-table .dashboard-table-body tr:last-child td {
+  border-bottom: none;
+}
+
+.dashboard-buttons-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+/* .edit-btn,
+.delete-btn {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+} */
+
+.edit-btn-icon {
+  width: 20px;
+  display: inline-block;
+  margin-left: auto;
+}
+
+.delete-btn {
+  color: var(--oxford-blue);
+  opacity: 0.5;
+  transition: all 0.3s ease-in-out;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+}
+
+.delete-btn-icon {
+  display: block;
+}
+
+/* .delete-btn:hover {
+  background: var(--red);
+  color: var(--white);
+} */
+
+@media (max-width: 991px) {
+  /* ----- Admin Dashboard Page ----- */
+  .dashboard-title {
+    font-size: 34px;
   }
 
-  .welcome-icon {
-    font-size: 50px;
+  .dashboard-logout-btn {
+    padding: 12px 22px;
   }
 
-  .welcome-description {
-    font-size: 16px;
+  .dashboard-table-wrapper {
+    border-radius: 12px;
+  }
+
+  .dashboard-user-table th,
+  .dashboard-user-table td {
+    padding: 14px 18px;
   }
 }
 
@@ -492,5 +632,19 @@ input[type="password"] {
   .section-main-wrapper {
     padding: 30px;
     border-radius: 12px;
+  }
+
+  /* ----- Welcome Page ----- */
+  .welcome-title {
+    font-size: 32px;
+    margin-block: 16px 14px;
+  }
+
+  .welcome-icon {
+    font-size: 50px;
+  }
+
+  .welcome-description {
+    font-size: 16px;
   }
 }
