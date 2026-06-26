@@ -726,7 +726,11 @@ function showForgotPasswordStep(stepId) {
 // -------
 // Admin Dashboard
 // -------
-
+let activeEdit = null;
+let deleteUserIndex = null;
+const deletePopup = document.getElementById("delete-confirm-popup");
+const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
 const userTableBody = document.getElementById("user-table-body");
 
 if (userTableBody) {
@@ -738,12 +742,13 @@ function deleteUser(index) {
   const deletedUser = users[index];
   users.splice(index, 1);
   localStorage.setItem("registeredUsers", JSON.stringify(users));
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  // If admin deletes their own account,
+  // logout immediately.
   if (currentUser && currentUser.email === deletedUser.email) {
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("loginSession");
-    sessionStorage.removeItem("loginSession");
+    logoutUser();
+    return;
   }
   loadUsersTable();
 }
@@ -755,28 +760,40 @@ function loadUsersTable() {
 
   users.forEach((user, index) => {
     const clone = template.content.cloneNode(true);
-
-    clone.querySelector(".user-name").textContent = user.fullName;
+    clone.querySelector(".user-name-text").textContent = user.fullName;
     clone.querySelector(".user-email").textContent = user.email;
-    clone.querySelector(".user-phone").textContent = user.phone;
+    clone.querySelector(".user-phone-text").textContent = user.phone;
 
     const roleSelect = clone.querySelector(".dashboard-user-role");
     roleSelect.value = user.role;
-
     roleSelect.addEventListener("change", () => {
       updateUserRole(index, roleSelect.value);
     });
 
-    const editButton = clone.querySelector(".edit-btn");
-    editButton.addEventListener("click", () => {
-      editUser(index);
+    // Name inline edit
+    const nameField = clone.querySelector(".user-name-text").closest("td");
+    initializeInlineEdit({
+      field: nameField,
+      value: user.fullName,
+      onSave(newValue) {
+        updateUserField(index, "fullName", newValue);
+      },
+    });
+
+    // Phone inline edit
+    const phoneField = clone.querySelector(".user-phone-text").closest("td");
+    initializeInlineEdit({
+      field: phoneField,
+      value: user.phone,
+      onSave(newValue) {
+        updateUserField(index, "phone", newValue);
+      },
     });
 
     const deleteButton = clone.querySelector(".delete-btn");
     deleteButton.addEventListener("click", () => {
-      deleteUser(index);
+      openDeletePopup(index);
     });
-
     userTableBody.appendChild(clone);
   });
 }
@@ -786,24 +803,142 @@ function updateUserRole(index, newRole) {
   users[index].role = newRole;
   localStorage.setItem("registeredUsers", JSON.stringify(users));
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
   if (currentUser && currentUser.email === users[index].email) {
     currentUser.role = newRole;
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
   }
+  loadUsersTable();
 }
 
-function editUser(index) {
+function updateUserField(index, key, value) {
   const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
-  const user = users[index];
-  const newName = prompt("Update Name", user.fullName);
-
-  if (newName === null) return;
-  const newPhone = prompt("Update Phone", user.phone);
-  if (newPhone === null) return;
-  user.fullName = newName.trim();
-  user.phone = newPhone.trim();
+  users[index][key] = value.trim();
   localStorage.setItem("registeredUsers", JSON.stringify(users));
-
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (currentUser && currentUser.email === users[index].email) {
+    currentUser[key] = value.trim();
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  }
   loadUsersTable();
+}
+
+function initializeInlineEdit({ field, value, onSave }) {
+  const text = field.querySelector(".field-text");
+  const input = field.querySelector(".field-input");
+  const editBtn = field.querySelector(".field-edit-btn");
+  const saveBtn = field.querySelector(".field-save-btn");
+  const cancelBtn = field.querySelector(".field-cancel-btn");
+  let originalValue = value;
+  text.textContent = value;
+  input.value = value;
+
+  function enterEditMode() {
+    // Close another open editor
+    if (activeEdit && activeEdit !== exitEditMode) {
+      activeEdit();
+    }
+
+    text.classList.add("hidden");
+    input.classList.remove("hidden");
+    editBtn.classList.add("hidden");
+    saveBtn.classList.remove("hidden");
+    cancelBtn.classList.remove("hidden");
+    input.focus();
+    input.select();
+    activeEdit = exitEditMode;
+  }
+
+  function exitEditMode() {
+    text.classList.remove("hidden");
+    input.classList.add("hidden");
+    editBtn.classList.remove("hidden");
+    saveBtn.classList.add("hidden");
+    cancelBtn.classList.add("hidden");
+    removeFieldError(input);
+    if (activeEdit === exitEditMode) {
+      activeEdit = null;
+    }
+  }
+
+  function cancelEdit() {
+    input.value = originalValue;
+    exitEditMode();
+  }
+
+  function saveChanges() {
+    const newValue = input.value.trim();
+    removeFieldError(input);
+    // Required validation
+    if (!newValue) {
+      showFieldError(input, "This field is required");
+      return;
+    }
+
+    // Phone validation
+    if (input.classList.contains("user-phone-input")) {
+      if (!/^\d+$/.test(newValue)) {
+        showFieldError(input, "Phone number must contain only digits");
+        return;
+      }
+
+      if (newValue.length !== 10) {
+        showFieldError(input, "Phone number must be 10 digits");
+        return;
+      }
+    }
+
+    originalValue = newValue;
+    text.textContent = newValue;
+    onSave(newValue);
+    exitEditMode();
+  }
+
+  editBtn.addEventListener("click", enterEditMode);
+  saveBtn.addEventListener("click", saveChanges);
+  cancelBtn.addEventListener("click", cancelEdit);
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      saveChanges();
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      cancelEdit();
+    }
+  });
+
+  input.addEventListener("input", () => {
+    if (input.classList.contains("user-phone-input")) {
+      input.value = input.value.replace(/\D/g, "").slice(0, 10);
+    }
+    removeFieldError(input);
+  });
+}
+
+function openDeletePopup(index) {
+  deleteUserIndex = index;
+  if (!deletePopup) return;
+  deletePopup.classList.add("show");
+}
+
+function closeDeletePopup() {
+  deleteUserIndex = null;
+  if (!deletePopup) return;
+  deletePopup.classList.remove("show");
+}
+
+if (confirmDeleteBtn) {
+  confirmDeleteBtn.addEventListener("click", () => {
+    if (deleteUserIndex !== null) {
+      deleteUser(deleteUserIndex);
+    }
+    closeDeletePopup();
+  });
+}
+
+if (cancelDeleteBtn) {
+  cancelDeleteBtn.addEventListener("click", () => {
+    closeDeletePopup();
+  });
 }
