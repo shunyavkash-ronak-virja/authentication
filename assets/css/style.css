@@ -564,45 +564,25 @@ input[type="password"] {
   border-bottom: none;
 }
 
-.dashboard-buttons-wrapper {
+.dashboard-btn-wrapper {
   display: flex;
-  gap: 10px;
+  gap: 32px;
 }
 
-/* .edit-btn,
-.delete-btn {
-  width: 100%;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 10px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease-in-out;
-} */
-
-.edit-btn-icon {
-  width: 20px;
-  display: inline-block;
-  margin-left: auto;
-}
-
-.delete-btn {
+.dashboard-btn {
+  width: 24px;
   color: var(--oxford-blue);
   opacity: 0.5;
   transition: all 0.3s ease-in-out;
 }
 
-.delete-btn:hover {
+.dashboard-btn:hover {
   opacity: 1;
 }
 
-.delete-btn-icon {
+.dashboard-btn-icon {
   display: block;
 }
-
-/* .delete-btn:hover {
-  background: var(--red);
-  color: var(--white);
-} */
 
 @media (max-width: 991px) {
   /* ----- Admin Dashboard Page ----- */
