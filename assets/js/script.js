@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeFormValidation();
   initializePasswordToggle();
   initializeErrorCleanup();
-  loadUsers();
 
   const signUpSuccessBtn = document.getElementById("success-popup-btn");
   if (signUpSuccessBtn) {
@@ -21,11 +20,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const errorPopupBtn = document.getElementById("error-popup-btn");
+  if (errorPopupBtn) {
+    errorPopupBtn.addEventListener("click", () => {
+      hideErrorPopup();
+    });
+  }
+
   const userName = document.getElementById("user-name");
-  const userData = JSON.parse(localStorage.getItem("currentUser"));
-  if (userName && userData) {
-    checkUserSession();
-    userName.textContent = userData.fullName;
+  if (checkUserSession()) {
+    const userData = JSON.parse(localStorage.getItem("currentUser"));
+    if (window.location.pathname.includes("admin-dashboard.html") && userData?.role !== "admin") {
+      window.location.href = "main.html";
+      return;
+    }
+    if (userName && userData) {
+      userName.textContent = userData.fullName;
+    }
   }
 });
 
@@ -465,6 +476,22 @@ function hideSuccessPopup(popupId) {
   popup.classList.remove("show");
 }
 
+function showErrorPopup(message) {
+  const popup = document.getElementById("error-popup");
+  const messageElement = document.getElementById("error-popup-message");
+
+  if (!popup || !messageElement) return;
+
+  messageElement.textContent = message;
+  popup.classList.add("show");
+}
+
+function hideErrorPopup() {
+  const popup = document.getElementById("error-popup");
+  if (!popup) return;
+  popup.classList.remove("show");
+}
+
 // -------
 // Login Validation Function
 // -------
@@ -498,33 +525,32 @@ function validateLogin(email, password) {
 // Login Session Function
 // -------
 function checkUserSession() {
-  let sessionData =
+  const currentPage = window.location.pathname.split("/").pop();
+  const publicPages = ["sign-in.html", "sign-up.html", "forget-password.html", ""];
+  const sessionData =
     JSON.parse(localStorage.getItem("loginSession")) ||
     JSON.parse(sessionStorage.getItem("loginSession"));
 
+  // User is NOT logged in
   if (!sessionData || !sessionData.isLoggedIn) {
-    window.location.href = "sign-in.html";
-    return;
+    if (!publicPages.includes(currentPage)) {
+      window.location.href = "sign-in.html";
+    }
+    return false;
   }
 
+  // Remember Me Expired
   if (sessionData.rememberMe) {
     const oneDay = 24 * 60 * 60 * 1000;
-    const currentTime = Date.now();
-    const sessionExpired = currentTime - sessionData.loginTime > oneDay;
-
-    if (sessionExpired) {
+    if (Date.now() - sessionData.loginTime > oneDay) {
       localStorage.removeItem("loginSession");
       localStorage.removeItem("currentUser");
-
       window.location.href = "sign-in.html";
-      return;
+      return false;
     }
   }
-}
 
-const userName = document.getElementById("user-name");
-if (userName) {
-  checkUserSession();
+  return true;
 }
 
 function createLoginSession(rememberMe) {
@@ -566,7 +592,7 @@ if (signInForm) {
     createLoginSession(rememberCheckbox.checked);
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (currentUser.role === "admin") {
-      window.location.href = "admin.html";
+      window.location.href = "admin-dashboard.html";
     } else {
       window.location.href = "main.html";
     }
@@ -694,17 +720,6 @@ function logoutUser() {
 // -------
 // Main Page Protection
 // -------
-const isMainPage = window.location.pathname.includes("main.html");
-if (isMainPage) {
-  const session =
-    JSON.parse(localStorage.getItem("loginSession")) ||
-    JSON.parse(sessionStorage.getItem("loginSession"));
-
-  if (!session?.isLoggedIn) {
-    window.location.href = "sign-in.html";
-  }
-}
-
 const logoutButton = document.getElementById("logout-btn");
 if (logoutButton) {
   logoutButton.addEventListener("click", () => {
@@ -727,7 +742,7 @@ function showForgotPasswordStep(stepId) {
 // Admin Dashboard
 // -------
 let activeEdit = null;
-let deleteUserIndex = null;
+let deleteUserEmail = null;
 const deletePopup = document.getElementById("delete-confirm-popup");
 const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
 const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
@@ -740,16 +755,25 @@ if (userTableBody) {
 function deleteUser(index) {
   const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
   const deletedUser = users[index];
+  const adminCount = users.filter((user) => user.role === "admin").length;
+
+  // Prevent deleting the last admin
+  if (deletedUser.role === "admin" && adminCount === 1) {
+    showErrorPopup("You cannot delete the last admin account.");
+    return;
+  }
+
   users.splice(index, 1);
   localStorage.setItem("registeredUsers", JSON.stringify(users));
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  // If admin deletes their own account,
-  // logout immediately.
+
   if (currentUser && currentUser.email === deletedUser.email) {
-    logoutUser();
-    return;
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("loginSession");
+    sessionStorage.removeItem("loginSession");
   }
+
   loadUsersTable();
 }
 
@@ -766,6 +790,10 @@ function loadUsersTable() {
 
     const roleSelect = clone.querySelector(".dashboard-user-role");
     roleSelect.value = user.role;
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (currentUser && currentUser.email === user.email) {
+      roleSelect.disabled = true;
+    }
     roleSelect.addEventListener("change", () => {
       updateUserRole(index, roleSelect.value);
     });
@@ -786,20 +814,24 @@ function loadUsersTable() {
       field: phoneField,
       value: user.phone,
       onSave(newValue) {
-        updateUserField(index, "phone", newValue);
+        return updateUserField(index, "phone", newValue);
       },
     });
 
     const deleteButton = clone.querySelector(".delete-btn");
-    deleteButton.addEventListener("click", () => {
-      openDeletePopup(index);
-    });
+    if (deleteButton) {
+      deleteButton.addEventListener("click", () => {
+        openDeletePopup(user.email);
+      });
+    }
+
     userTableBody.appendChild(clone);
   });
 }
 
 function updateUserRole(index, newRole) {
   const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  if (!users[index]) return;
   users[index].role = newRole;
   localStorage.setItem("registeredUsers", JSON.stringify(users));
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -807,11 +839,18 @@ function updateUserRole(index, newRole) {
     currentUser.role = newRole;
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
   }
-  loadUsersTable();
 }
 
 function updateUserField(index, key, value) {
   const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  if (key === "phone") {
+    const phoneExists = users.some(
+      (user, userIndex) => user.phone === value.trim() && userIndex !== index,
+    );
+    if (phoneExists) {
+      return { success: false, message: "Phone number already exists" };
+    }
+  }
   users[index][key] = value.trim();
   localStorage.setItem("registeredUsers", JSON.stringify(users));
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -820,6 +859,7 @@ function updateUserField(index, key, value) {
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
   }
   loadUsersTable();
+  return { success: true };
 }
 
 function initializeInlineEdit({ field, value, onSave }) {
@@ -828,15 +868,17 @@ function initializeInlineEdit({ field, value, onSave }) {
   const editBtn = field.querySelector(".field-edit-btn");
   const saveBtn = field.querySelector(".field-save-btn");
   const cancelBtn = field.querySelector(".field-cancel-btn");
-  let originalValue = value;
+
   text.textContent = value;
   input.value = value;
 
   function enterEditMode() {
-    // Close another open editor
-    if (activeEdit && activeEdit !== exitEditMode) {
+    // Close another editing field first
+    if (activeEdit && activeEdit !== cancelEditMode) {
       activeEdit();
     }
+
+    activeEdit = cancelEditMode;
 
     text.classList.add("hidden");
     input.classList.remove("hidden");
@@ -845,7 +887,6 @@ function initializeInlineEdit({ field, value, onSave }) {
     cancelBtn.classList.remove("hidden");
     input.focus();
     input.select();
-    activeEdit = exitEditMode;
   }
 
   function exitEditMode() {
@@ -854,21 +895,29 @@ function initializeInlineEdit({ field, value, onSave }) {
     editBtn.classList.remove("hidden");
     saveBtn.classList.add("hidden");
     cancelBtn.classList.add("hidden");
+
     removeFieldError(input);
-    if (activeEdit === exitEditMode) {
+
+    if (activeEdit === cancelEditMode) {
       activeEdit = null;
     }
   }
 
-  function cancelEdit() {
-    input.value = originalValue;
+  function cancelEditMode() {
+    input.value = text.textContent;
     exitEditMode();
   }
 
   function saveChanges() {
     const newValue = input.value.trim();
+    // Don't save if nothing changed
+    if (newValue === text.textContent.trim()) {
+      exitEditMode();
+      return;
+    }
+
     removeFieldError(input);
-    // Required validation
+
     if (!newValue) {
       showFieldError(input, "This field is required");
       return;
@@ -876,26 +925,24 @@ function initializeInlineEdit({ field, value, onSave }) {
 
     // Phone validation
     if (input.classList.contains("user-phone-input")) {
-      if (!/^\d+$/.test(newValue)) {
-        showFieldError(input, "Phone number must contain only digits");
-        return;
-      }
-
-      if (newValue.length !== 10) {
+      if (!/^[0-9]{10}$/.test(newValue)) {
         showFieldError(input, "Phone number must be 10 digits");
         return;
       }
     }
 
-    originalValue = newValue;
     text.textContent = newValue;
-    onSave(newValue);
+    const result = onSave(newValue);
+    if (result && result.success === false) {
+      showFieldError(input, result.message);
+      return;
+    }
     exitEditMode();
   }
 
   editBtn.addEventListener("click", enterEditMode);
   saveBtn.addEventListener("click", saveChanges);
-  cancelBtn.addEventListener("click", cancelEdit);
+  cancelBtn.addEventListener("click", cancelEditMode);
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -904,34 +951,35 @@ function initializeInlineEdit({ field, value, onSave }) {
 
     if (event.key === "Escape") {
       event.preventDefault();
-      cancelEdit();
+      cancelEditMode();
     }
   });
 
   input.addEventListener("input", () => {
+    removeFieldError(input);
     if (input.classList.contains("user-phone-input")) {
       input.value = input.value.replace(/\D/g, "").slice(0, 10);
     }
-    removeFieldError(input);
   });
 }
 
-function openDeletePopup(index) {
-  deleteUserIndex = index;
-  if (!deletePopup) return;
+function openDeletePopup(email) {
+  deleteUserEmail = email;
   deletePopup.classList.add("show");
 }
 
 function closeDeletePopup() {
-  deleteUserIndex = null;
-  if (!deletePopup) return;
+  deleteUserEmail = null;
   deletePopup.classList.remove("show");
 }
 
 if (confirmDeleteBtn) {
   confirmDeleteBtn.addEventListener("click", () => {
-    if (deleteUserIndex !== null) {
-      deleteUser(deleteUserIndex);
+    if (!deleteUserEmail) return;
+    const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+    const index = users.findIndex((user) => user.email === deleteUserEmail);
+    if (index !== -1) {
+      deleteUser(index);
     }
     closeDeletePopup();
   });

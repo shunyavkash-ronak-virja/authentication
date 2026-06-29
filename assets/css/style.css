@@ -564,11 +564,6 @@ input[type="password"] {
   border-bottom: none;
 }
 
-.dashboard-btn-wrapper {
-  display: flex;
-  gap: 32px;
-}
-
 .dashboard-btn {
   width: 24px;
   color: var(--oxford-blue);

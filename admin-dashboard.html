@@ -44,18 +44,18 @@
                                 <div class="editable-field" data-field="fullName">
                                     <span class="field-text user-name-text"></span>
                                     <input type="text" class="content-inpute field-input user-name-input hidden">
-                                    <button class="field-edit-btn" type="button">
+                                    <button class="dashboard-btn field-edit-btn" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dashboard-btn-icon lucide lucide-pencil-icon lucide-pencil">
                                             <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
                                             <path d="m15 5 4 4" />
                                         </svg>
                                     </button>
-                                    <button class="field-save-btn hidden" type="button">
+                                    <button class="dashboard-btn field-save-btn hidden" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dashboard-btn-icon lucide lucide-check-icon lucide-check">
                                             <path d="M20 6 9 17l-5-5" />
                                         </svg>
                                     </button>
-                                    <button class="field-cancel-btn hidden" type="button">
+                                    <button class="dashboard-btn field-cancel-btn hidden" type="button">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dashboard-btn-icon lucide lucide-x-icon lucide-x">
                                             <path d="M18 6 6 18" />
                                             <path d="m6 6 12 12" />
@@ -94,15 +94,13 @@
                                 </select>
                             </td>
                             <td>
-                                <div class="dashboard-btn-wrapper">
-                                    <button class="dashboard-btn delete-btn" type="button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dashboard-btn-icon lucide-trash-icon lucide-trash">
-                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                            <path d="M3 6h18" />
-                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                        </svg>
-                                    </button>
-                                </div>
+                                <button class="dashboard-btn delete-btn" type="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dashboard-btn-icon lucide-trash-icon lucide-trash">
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                        <path d="M3 6h18" />
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                    </svg>
+                                </button>
                             </td>
                         </tr>
                     </template>
@@ -122,6 +120,14 @@
                 <button class="btn secondary-btn" id="cancel-delete-btn" type="button">Cancel</button>
                 <button class="btn popup-delete-btn" id="confirm-delete-btn" type="button">Delete</button>
             </div>
+        </div>
+    </div>
+
+    <div class="custom-popup" id="error-popup">
+        <div class="popup-content">
+            <h3 class="popup-title">Error</h3>
+            <p id="error-popup-message"></p>
+            <button type="button" id="error-popup-btn" class="primary-btn">OK</button>
         </div>
     </div>
     <!----- Custom Js ----->
