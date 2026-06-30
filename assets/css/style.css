@@ -356,6 +356,10 @@ input[type="password"] {
   margin-bottom: 24px;
 }
 
+.error-description {
+  color: var(--red);
+}
+
 .popup-action-buttons {
   display: flex;
   align-items: center;
@@ -458,10 +462,14 @@ input[type="password"] {
   overflow: hidden;
 }
 
-.welcome-icon {
+.welcome-icon-block {
   display: inline-block;
-  font-size: 64px;
   animation: wave 2s infinite;
+}
+
+.welcome-icon {
+  width: 66px;
+  display: block;
 }
 
 .welcome-title {
@@ -635,8 +643,8 @@ input[type="password"] {
     margin-block: 16px 14px;
   }
 
-  .welcome-icon {
-    font-size: 50px;
+  .welcome-icon-block {
+    width: 50px;
   }
 
   .welcome-description {
