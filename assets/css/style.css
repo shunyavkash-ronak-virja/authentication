@@ -236,6 +236,10 @@ input[type="password"] {
   transition: all 0.3s ease-in-out;
 }
 
+.hidden {
+  display: none;
+}
+
 .icon-visibility {
   visibility: hidden;
   opacity: 0;
@@ -301,7 +305,7 @@ input[type="password"] {
   position: absolute;
 }
 
-.success-popup {
+.popup {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -314,12 +318,12 @@ input[type="password"] {
   transition: all 0.3s ease-in-out;
 }
 
-.success-popup.show {
+.popup.show {
   opacity: 1;
   visibility: visible;
 }
 
-.success-popup-content {
+.popup-content {
   max-width: 420px;
   width: calc(100% - 40px);
   background: var(--white);
@@ -330,24 +334,24 @@ input[type="password"] {
   transition: all 0.3s ease-in-out;
 }
 
-.success-popup.show .success-popup-content {
+.popup.show .popup-content {
   transform: scale(1);
 }
 
-.success-popup-icon {
+.popup-icon {
   width: 76px;
   margin-inline: auto;
   margin-bottom: 10px;
 }
 
-.success-popup-title {
+.popup-title {
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 10px;
   color: var(--sambucus);
 }
 
-.success-popup-description {
+.popup-description {
   color: var(--vesper-violet);
   margin-bottom: 24px;
 }
@@ -550,7 +554,23 @@ input[type="password"] {
 .dashboard-user-table td {
   padding: 18px 24px;
   border-bottom: 1px solid var(--white-200);
-  vertical-align: middle;
+  /* vertical-align: middle; */
+}
+
+.editable-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field-text,
+.field-input {
+  flex: 1;
+}
+
+.field-input {
+  margin-top: 0;
 }
 
 .dashboard-user-role {
@@ -565,7 +585,7 @@ input[type="password"] {
 }
 
 .dashboard-btn {
-  width: 24px;
+  width: 20px;
   color: var(--oxford-blue);
   opacity: 0.5;
   transition: all 0.3s ease-in-out;

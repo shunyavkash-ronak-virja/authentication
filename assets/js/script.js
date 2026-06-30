@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initializePasswordToggle();
   initializeErrorCleanup();
 
-  const signUpSuccessBtn = document.getElementById("success-popup-btn");
+  const signUpSuccessBtn = document.getElementById("popup-btn");
   if (signUpSuccessBtn) {
     signUpSuccessBtn.addEventListener("click", () => {
-      hideSuccessPopup("success-popup");
+      hideSuccessPopup("popup");
       window.location.href = "sign-in.html";
     });
   }
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetSuccessBtn = document.getElementById("reset-success-btn");
   if (resetSuccessBtn) {
     resetSuccessBtn.addEventListener("click", () => {
-      hideSuccessPopup("reset-success-popup");
+      hideSuccessPopup("reset-popup");
       window.location.href = "sign-in.html";
     });
   }
@@ -191,7 +191,7 @@ function initializeFormValidation() {
       resetPasswordRules(block);
     });
 
-    showSuccessPopup("success-popup");
+    showSuccessPopup("popup");
   });
 }
 
@@ -674,7 +674,7 @@ if (resetForm) {
       return user;
     });
     localStorage.setItem("registeredUsers", JSON.stringify(users));
-    showSuccessPopup("reset-success-popup");
+    showSuccessPopup("reset-popup");
   });
 }
 
@@ -817,14 +817,12 @@ function loadUsersTable() {
         return updateUserField(index, "phone", newValue);
       },
     });
-
     const deleteButton = clone.querySelector(".delete-btn");
     if (deleteButton) {
       deleteButton.addEventListener("click", () => {
         openDeletePopup(user.email);
       });
     }
-
     userTableBody.appendChild(clone);
   });
 }
@@ -877,9 +875,7 @@ function initializeInlineEdit({ field, value, onSave }) {
     if (activeEdit && activeEdit !== cancelEditMode) {
       activeEdit();
     }
-
     activeEdit = cancelEditMode;
-
     text.classList.add("hidden");
     input.classList.remove("hidden");
     editBtn.classList.add("hidden");
@@ -964,6 +960,15 @@ function initializeInlineEdit({ field, value, onSave }) {
 }
 
 function openDeletePopup(email) {
+  const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+  const selectedUser = users.find((user) => user.email === email);
+  const adminCount = users.filter((user) => user.role === "admin").length;
+
+  // Don't even open confirmation popup
+  if (selectedUser && selectedUser.role === "admin" && adminCount === 1) {
+    showErrorPopup("You cannot delete the last admin account.");
+    return;
+  }
   deleteUserEmail = email;
   deletePopup.classList.add("show");
 }
